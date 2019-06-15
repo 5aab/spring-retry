@@ -27,6 +27,18 @@ public class RetryController {
         return "unhealthy invoked";
     }
 
+    @GetMapping("/test/unhealthy-child")
+    @ResponseBody
+    public String testUnhealthyChildResourceException(){
+
+        retryTemplate.execute(arg0 -> {
+            integrationService.testUnhealthyChildResourceException();
+            return null;
+        });
+
+        return "unhealthy child invoked";
+    }
+
     @GetMapping("/test/runtime-exception")
     @ResponseBody
     public String testRuntimeException(){

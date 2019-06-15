@@ -2,6 +2,7 @@ package com.aab.retry.config;
 
 import com.aab.retry.exception.UnhealthyResourceException;
 import lombok.AllArgsConstructor;
+import org.springframework.classify.SubclassClassifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.RetryPolicy;
@@ -27,14 +28,19 @@ public class RetryTemplateConfig {
         retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
 
         final ExceptionClassifierRetryPolicy exRetryPolicy = new ExceptionClassifierRetryPolicy();
-        exRetryPolicy.setPolicyMap(new HashMap<Class<? extends Throwable>, RetryPolicy>() {{
+        /*exRetryPolicy.setPolicyMap(new HashMap<Class<? extends Throwable>, RetryPolicy>() {{
+            put(UnhealthyResourceException.class, new SimpleRetryPolicy(3));
+            //put(Exception.class, new NeverRetryPolicy());
+        }});*/
+
+        SimpleRetryPolicy simpleRetryPolicy=new SimpleRetryPolicy();
+        SubclassClassifier subclassClassifier=new SubclassClassifier();
+        subclassClassifier.setTypeMap(new HashMap<Class<? extends Throwable>, RetryPolicy>() {{
             put(UnhealthyResourceException.class, new SimpleRetryPolicy(3));
             //put(Exception.class, new NeverRetryPolicy());
         }});
 
-        SimpleRetryPolicy simpleRetryPolicy=new SimpleRetryPolicy();
-
-
+        exRetryPolicy.setExceptionClassifier(subclassClassifier);
         retryTemplate.setRetryPolicy(exRetryPolicy);
 
         retryTemplate.registerListener(retryListener);

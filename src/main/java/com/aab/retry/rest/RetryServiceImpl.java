@@ -1,5 +1,6 @@
 package com.aab.retry.rest;
 
+import com.aab.retry.exception.UnhealthyChildResourceException;
 import com.aab.retry.exception.UnhealthyResourceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,12 @@ public class RetryServiceImpl implements RetryService {
     public void testUnhealthyResourceException(){
         log.info("in testUnhealthyResourceException");
        throw new UnhealthyResourceException();
+    }
+
+    @Override
+    public void testUnhealthyChildResourceException(){
+        log.info("in testUnhealthyChildResourceException");
+        throw new UnhealthyChildResourceException();
     }
 
     @Override
